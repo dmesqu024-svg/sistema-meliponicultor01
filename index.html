@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Meliponicultor Pro - Gestão e Safra</title>
+    <style>
+        :root { 
+            --primary: #2e7d32; 
+            --secondary: #f57f17;
+            --danger: #c62828;
+            --info: #0277bd;
+            --bg: #f4f7f4; 
+            --white: #ffffff; 
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); padding: 20px; color: #333; line-height: 1.6; }
+        .container { max-width: 1000px; margin: auto; background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        h1 { text-align: center; color: var(--primary); margin-bottom: 30px; border-bottom: 3px solid var(--primary); padding-bottom: 10px; }
+        h2 { font-size: 1.1em; margin-top: 25px; background: #e8f5e9; color: #1b5e20; padding: 12px; border-left: 5px solid var(--primary); border-radius: 4px; display: flex; align-items: center; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full-width { grid-column: span 2; }
+        
+        label { display: block; margin-top: 10px; font-weight: 600; font-size: 0.85em; color: #555; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; margin-top: 5px; }
+        
+        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px dashed #bbb; margin-top: 5px; }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 0.85em; cursor: pointer; }
+        .checkbox-item input { width: auto; margin: 0; }
+
+        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold; margin-top: 30px; transition: 0.3s; background: var(--primary); color: white; text-transform: uppercase; }
+        .btn-main:hover { background: #1b5e20; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        
+        #relatorio { margin-top: 50px; border-top: 2px solid #eee; padding-top: 20px; }
+        .card { border: 1px solid #e0e0e0; padding: 20px; margin-bottom: 20px; border-radius: 8px; position: relative; background: #fff; }
+        .card-title { color: var(--primary); font-weight: bold; font-size: 1.1em; margin-bottom: 10px; display: block; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; margin-right: 5px; border: 1px solid #ccc; margin-bottom: 5px; }
+        .badge-safra { background: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
+        .badge-danger { background: #ffebee; color: #c62828; border-color: #ffcdd2; }
+
+        .btn-delete { position: absolute; right: 15px; top: 15px; background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
+        @media print { .no-print { display: none; } .container { box-shadow: none; width: 100%; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="no-print">
+        <h1>🐝 Sistema de Gestão Meliponícola</h1>
+        <form id="cadastroForm">
+            
+            <h2>👤 1. Identificação e Contato</h2>
+            <div class="grid">
+                <div class="full-width">
+                    <label>Nome do Meliponicultor:</label>
+                    <input type="text" id="nome" required>
+                </div>
+                <div>
+                    <label>Telefone / WhatsApp:</label>
+                    <input type="tel" id="telefone" placeholder="(00) 00000-0000">
+                </div>
+                <div>
+                    <label>E-mail:</label>
+                    <input type="email" id="email" placeholder="exemplo@email.com">
+                </div>
+                <div>
+                    <label>CPF/CNPJ:</label>
+                    <input type="text" id="cpf">
+                </div>
+                <div>
+                    <label>Endereço/Localidade:</label>
+                    <input type="text" id="endereco">
+                </div>
+            </div>
+
+            <h2>🏠 2. Infraestrutura e Plantel</h2>
+            <div class="grid">
+                <div>
+                    <label>Tipo de Meliponário:</label>
+                    <select id="tipoMeliponario">
+                        <option value="Cavaletes Individuais">Cavaletes Individuais</option>
+                        <option value="Estante Coletiva">Estante Coletiva</option>
+                        <option value="Telado/Proteção">Meliponário Telado</option>
+                        <option value="Fixação em Árvores">Fixação em Árvores</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Espécie Principal:</label>
+                    <input type="text" id="especie" placeholder="Ex: Jataí, Mandaçaia, Uruçu...">
+                </div>
+                <div>
+                    <label>Quantidade de Colônias:</label>
+                    <input type="number" id="qtd">
+                </div>
+                <div>
+                    <label>Origem das Abelhas:</label>
+                    <select id="origem">
+                        <option value="DIVISÃO">DIVISÃO</option>
+                        <option value="RESGATE">RESGATE</option>
+                        <option value="COMPRA">COMPRA</option>
+                        <option value="CAPTURA">CAPTURA</option>
+                    </select>
+                </div>
+            </div>
+
+            <h2>🌿 3. Pastagem e Ambiente</h2>
+            <div class="grid">
+                <div class="full-width">
+                    <label>Principais Plantas (Flora):</label>
+                    <input type="text" id="especiesVeg">
+                </div>
+                <div>
+                    <label>Tipo de Flora:</label>
+                    <select id="origemFlora">
+                        <option value="Nativa">Nativa</option>
+                        <option value="Espontânea">Espontânea</option>
+                        <option value="Exótica">Exótica</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Recursos:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="recurso" value="Néctar"> Néctar</label>
+                        <label class="checkbox-item"><input type="checkbox" name="recurso" value="Pólen"> Pólen</label>
+                        <label class="checkbox-item"><input type="checkbox" name="recurso" value="Resina"> Resina</label>
+                    </div>
+                </div>
+            </div>
+
+            <h2>🍯 4. Relato de Safra (Produção)</h2>
+            <div class="grid">
+                <div>
+                    <label>Produto Colhido:</label>
+                    <select id="produtoSafra">
+                        <option value="Mel">Mel</option>
+                        <option value="Pólen (Samburá)">Pólen (Samburá)</option>
+                        <option value="Própolis/Geopropólis">Própolis/Geopropólis</option>
+                        <option value="Cera/Cerume">Cera/Cerume</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Quantidade Estimada:</label>
+                    <input type="text" id="qtdSafra" placeholder="Ex: 5 Litros, 2 Kg...">
+                </div>
+                <div>
+                    <label>Data da Colheita:</label>
+                    <input type="date" id="dataSafra">
+                </div>
+                <div>
+                    <label>Qualidade/Observação:</label>
+                    <input type="text" id="obsSafra" placeholder="Ex: Mel claro, aroma floral...">
+                </div>
+            </div>
+
+            <h2>⚠️ 5. Sanidade (Pragas)</h2>
+            <div class="checkbox-group">
+                <label class="checkbox-item"><input type="checkbox" name="praga" value="Forídeos"> Forídeos</label>
+                <label class="checkbox-item"><input type="checkbox" name="praga" value="Formigas"> Formigas</label>
+                <label class="checkbox-item"><input type="checkbox" name="praga" value="Abelha-Limão"> Abelha-Limão</label>
+                <label class="checkbox-item"><input type="checkbox" name="praga" value="Traça de Cera"> Traça de Cera</label>
+            </div>
+
+            <button type="submit" class="btn-main">💾 Salvar Tudo no Sistema</button>
+        </form>
+    </div>
+
+    <div id="relatorio">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>📊 Registros e Histórico</h2>
+            <button onclick="window.print()" class="no-print" style="padding:10px; cursor:pointer;">🖨️ Gerar PDF/Imprimir</button>
+        </div>
+        <div id="listaDados"></div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('cadastroForm');
+    const lista = document.getElementById('listaDados');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const recursos = Array.from(document.querySelectorAll('input[name="recurso"]:checked')).map(cb => cb.value);
+        const pragas = Array.from(document.querySelectorAll('input[name="praga"]:checked')).map(cb => cb.value);
+
+        const registro = {
+            id: Date.now(),
+            nome: document.getElementById('nome').value,
+            telefone: document.getElementById('telefone').value,
+            email: document.getElementById('email').value,
+            cpf: document.getElementById('cpf').value,
+            endereco: document.getElementById('endereco').value,
+            tipoMeli: document.getElementById('tipoMeliponario').value,
+            especie: document.getElementById('especie').value,
+            qtd: document.getElementById('qtd').value,
+            origem: document.getElementById('origem').value,
+            especiesVeg: document.getElementById('especiesVeg').value,
+            origemFlora: document.getElementById('origemFlora').value,
+            recursos: recursos.join(", "),
+            // Dados da Safra
+            produtoSafra: document.getElementById('produtoSafra').value,
+            qtdSafra: document.getElementById('qtdSafra').value,
+            dataSafra: document.getElementById('dataSafra').value,
+            obsSafra: document.getElementById('obsSafra').value,
+            pragas: pragas.join(", "),
+            dataRegistro: new Date().toLocaleDateString('pt-BR')
+        };
+
+        const banco = JSON.parse(localStorage.getItem('meliponaria_v4')) || [];
+        banco.unshift(registro);
+        localStorage.setItem('meliponaria_v2', JSON.stringify(banco)); // Mantive compatível ou mude v4
+
+        alert("✅ Dados salvos com sucesso!");
+        form.reset();
+        renderizar();
+    });
+
+    function renderizar() {
+        const banco = JSON.parse(localStorage.getItem('meliponaria_v2')) || [];
+        lista.innerHTML = "";
+
+        banco.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `
+                <button class="btn-delete no-print" onclick="excluir(${item.id})">Excluir</button>
+                <span class="card-title">${item.nome}</span>
+                <div style="font-size: 0.85em; margin-bottom: 10px;">
+                    📞 ${item.telefone} | ✉️ ${item.email} | 🏠 ${item.endereco}
+                </div>
+                
+                <div class="grid">
+                    <div style="border-right: 1px solid #eee; padding-right: 10px;">
+                        <strong>🐝 Plantel:</strong> ${item.qtd}x ${item.especie}<br>
+                        <small>Tipo: ${item.tipoMeli} | Origem: ${item.origem}</small>
+                    </div>
+                    <div>
+                        <strong>🍯 Produção/Safra:</strong><br>
+                        <span class="badge badge-safra">${item.produtoSafra}: ${item.qtdSafra}</span>
+                        <br><small>Data Colheita: ${item.dataSafra || 'Não informada'}</small>
+                    </div>
+                </div>
+
+                <div style="margin-top:10px;">
+                    <strong>🌿 Ambiente:</strong> ${item.especiesVeg} (${item.origemFlora})<br>
+                    <strong>⚠️ Pragas:</strong> ${item.pragas ? `<span class="badge badge-danger">${item.pragas}</span>` : 'Nenhuma'}
+                </div>
+                <small style="color:#888; display:block; margin-top:10px; border-top:1px solid #f9f9f9;">📅 Cadastrado em: ${item.dataRegistro}</small>
+            `;
+            lista.appendChild(div);
+        });
+    }
+
+    function excluir(id) {
+        if(confirm("Deseja apagar este registro?")) {
+            let banco = JSON.parse(localStorage.getItem('meliponaria_v2'));
+            banco = banco.filter(i => i.id !== id);
+            localStorage.setItem('meliponaria_v2', JSON.stringify(banco));
+            renderizar();
+        }
+    }
+
+    window.onload = renderizar;
+</script>
+
+</body>
+</html>
