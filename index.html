@@ -6,180 +6,639 @@
     <title>Sistema Meliponicultor Pro - Gestão e Safra</title>
     <style>
         :root { 
-            --primary: #2e7d32; 
+            --primary: #1b5e20; 
+            --primary-light: #e8f5e9;
+            --primary-hover: #144317;
             --secondary: #f57f17;
-            --danger: #c62828;
-            --info: #0277bd;
-            --bg: #f4f7f4; 
-            --white: #ffffff; 
+            --danger: #d32f2f;
+            --danger-light: #ffebee;
+            --info: #0077c2;
+            --info-light: #e1f5fe;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --bg-global: #f8fafc; 
+            --bg-card: #ffffff; 
+            --border-color: #e2e8f0;
         }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); padding: 20px; color: #333; line-height: 1.6; }
-        .container { max-width: 1000px; margin: auto; background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         
-        h1 { text-align: center; color: var(--primary); margin-bottom: 30px; border-bottom: 3px solid var(--primary); padding-bottom: 10px; }
-        h2 { font-size: 1.1em; margin-top: 25px; background: #e8f5e9; color: #1b5e20; padding: 12px; border-left: 5px solid var(--primary); border-radius: 4px; display: flex; align-items: center; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg-global); 
+            color: var(--text-main); 
+            line-height: 1.5; 
+            padding: 40px 20px;
+        }
+
+        /* Tela de Login */
+        .login-container {
+            max-width: 400px;
+            margin: 60px auto;
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .login-container h1 {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .login-error {
+            color: var(--danger);
+            background: var(--danger-light);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            margin-bottom: 15px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Painel Principal (Oculto por padrão) */
+        .main-panel {
+            display: none;
+        }
+        
+        .container { 
+            max-width: 1100px; 
+            margin: auto; 
+            background: var(--bg-card); 
+            padding: 40px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.1); 
+        }
+        
+        h1 { 
+            text-align: center; 
+            color: var(--primary); 
+            font-size: 2.2em;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 35px; 
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        h2 { 
+            font-size: 1.15em; 
+            font-weight: 700;
+            margin-top: 35px; 
+            margin-bottom: 20px;
+            background: var(--primary-light); 
+            color: var(--primary); 
+            padding: 14px 20px; 
+            border-radius: 8px; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
         .full-width { grid-column: span 2; }
         
-        label { display: block; margin-top: 10px; font-weight: 600; font-size: 0.85em; color: #555; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; margin-top: 5px; }
+        label { 
+            display: block; 
+            font-weight: 600; 
+            font-size: 0.85em; 
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
         
-        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px dashed #bbb; margin-top: 5px; }
-        .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 0.85em; cursor: pointer; }
-        .checkbox-item input { width: auto; margin: 0; }
-
-        .btn-main { width: 100%; padding: 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; font-weight: bold; margin-top: 30px; transition: 0.3s; background: var(--primary); color: white; text-transform: uppercase; }
-        .btn-main:hover { background: #1b5e20; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px 16px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 8px; 
+            font-size: 14px; 
+            color: var(--text-main);
+            background-color: #fafafa;
+            transition: all 0.2s ease;
+        }
         
-        #relatorio { margin-top: 50px; border-top: 2px solid #eee; padding-top: 20px; }
-        .card { border: 1px solid #e0e0e0; padding: 20px; margin-bottom: 20px; border-radius: 8px; position: relative; background: #fff; }
-        .card-title { color: var(--primary); font-weight: bold; font-size: 1.1em; margin-bottom: 10px; display: block; }
-        .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; margin-right: 5px; border: 1px solid #ccc; margin-bottom: 5px; }
-        .badge-safra { background: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
-        .badge-danger { background: #ffebee; color: #c62828; border-color: #ffcdd2; }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: var(--bg-card);
+            box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.15);
+        }
+        
+        .checkbox-group { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 12px; 
+            background: #f8fafc; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color); 
+        }
+        
+        .checkbox-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-size: 0.9em; 
+            font-weight: 500;
+            cursor: pointer; 
+            color: var(--text-main);
+        }
+        
+        .checkbox-item input { 
+            width: 18px; 
+            height: 18px; 
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
 
-        .btn-delete { position: absolute; right: 15px; top: 15px; background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .btn-main { 
+            width: 100%; 
+            padding: 16px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 1em; 
+            font-weight: 700; 
+            margin-top: 40px; 
+            transition: all 0.2s ease; 
+            background: var(--primary); 
+            color: white; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-main:hover { 
+            background: var(--primary-hover); 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 12px rgba(27, 94, 32, 0.25); 
+        }
+        
+        #relatorio { 
+            margin-top: 60px; 
+            border-top: 2px solid var(--border-color); 
+            padding-top: 40px; 
+        }
+        
+        .relatorio-header {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 25px;
+        }
+        
+        .relatorio-header h2 {
+            margin: 0;
+            background: none;
+            padding: 0;
+            color: var(--text-main);
+        }
+        
+        .btn-secondary {
+            padding: 10px 20px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9em;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            border-color: var(--text-muted);
+        }
 
-        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
-        @media print { .no-print { display: none; } .container { box-shadow: none; width: 100%; } }
+        .btn-logout {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .btn-logout:hover {
+            background: var(--danger-light);
+            border-color: var(--danger);
+        }
+        
+        .card { 
+            border: 1px solid var(--border-color); 
+            padding: 24px; 
+            margin-bottom: 24px; 
+            border-radius: 12px; 
+            position: relative; 
+            background: var(--bg-card); 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        
+        .card-title { 
+            color: var(--primary); 
+            font-weight: 700; 
+            font-size: 1.2em; 
+            margin-bottom: 6px; 
+            display: block; 
+            max-width: 85%;
+        }
+        
+        .card-meta {
+            font-size: 0.85em; 
+            margin-bottom: 18px; 
+            color: var(--text-muted);
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: #fafafa;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .card-section-title {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: block;
+        }
+        
+        .badge { 
+            display: inline-block; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            font-size: 0.75em; 
+            font-weight: 700; 
+            margin-right: 6px; 
+            border: 1px solid transparent;
+            margin-bottom: 6px; 
+        }
+        
+        .badge-safra { background: var(--info-light); color: var(--info); border-color: #b3e5fc; }
+        .badge-danger { background: var(--danger-light); color: var(--danger); border-color: #ffcdd2; }
+        .badge-info { background: #f0f4f8; color: #475569; border-color: #cbd5e1; }
+
+        .btn-delete { 
+            position: absolute; 
+            right: 24px; 
+            top: 24px; 
+            background: transparent; 
+            color: var(--danger); 
+            border: 1px solid var(--danger); 
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .card-footer {
+            margin-top: 16px; 
+            font-size: 0.85em; 
+            color: var(--text-muted); 
+            display: block; 
+            border-top: 1px solid #f1f5f9; 
+            padding-top: 12px;
+        }
+
+        @media (max-width: 768px) { 
+            .grid { grid-template-columns: 1fr; } 
+            .full-width { grid-column: span 1; } 
+            .card-grid { grid-template-columns: 1fr; }
+            body { padding: 10px; }
+            .container { padding: 20px; }
+        }
+        @media print { .no-print { display: none; } .container { box-shadow: none; padding: 0; width: 100%; } .card { box-shadow: none; page-break-inside: avoid; } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="no-print">
-        <h1>🐝 Sistema de Gestão Meliponícola</h1>
-        <form id="cadastroForm">
-            
-            <h2>👤 1. Identificação e Contato</h2>
-            <div class="grid">
-                <div class="full-width">
-                    <label>Nome do Meliponicultor:</label>
-                    <input type="text" id="nome" required>
-                </div>
-                <div>
-                    <label>Telefone / WhatsApp:</label>
-                    <input type="tel" id="telefone" placeholder="(00) 00000-0000">
-                </div>
-                <div>
-                    <label>E-mail:</label>
-                    <input type="email" id="email" placeholder="exemplo@email.com">
-                </div>
-                <div>
-                    <label>CPF/CNPJ:</label>
-                    <input type="text" id="cpf">
-                </div>
-                <div>
-                    <label>Endereço/Localidade:</label>
-                    <input type="text" id="endereco">
-                </div>
-            </div>
+<div id="loginSection" class="login-container no-print">
+    <h1>Acesso ao Sistema</h1>
+    <div id="loginError" class="login-error">Usuário ou senha incorretos.</div>
+    <form id="loginForm">
+        <div style="margin-bottom: 15px;">
+            <label for="username">Usuário:</label>
+            <input type="text" id="username" required autocomplete="username">
+        </div>
+        <div style="margin-bottom: 25px;">
+            <label for="password">Senha:</label>
+            <input type="password" id="password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-main" style="margin-top: 0;">Entrar</button>
+    </form>
+</div>
 
-            <h2>🏠 2. Infraestrutura e Plantel</h2>
-            <div class="grid">
-                <div>
-                    <label>Tipo de Meliponário:</label>
-                    <select id="tipoMeliponario">
-                        <option value="Cavaletes Individuais">Cavaletes Individuais</option>
-                        <option value="Estante Coletiva">Estante Coletiva</option>
-                        <option value="Telado/Proteção">Meliponário Telado</option>
-                        <option value="Fixação em Árvores">Fixação em Árvores</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Espécie Principal:</label>
-                    <input type="text" id="especie" placeholder="Ex: Jataí, Mandaçaia, Uruçu...">
-                </div>
-                <div>
-                    <label>Quantidade de Colônias:</label>
-                    <input type="number" id="qtd">
-                </div>
-                <div>
-                    <label>Origem das Abelhas:</label>
-                    <select id="origem">
-                        <option value="DIVISÃO">DIVISÃO</option>
-                        <option value="RESGATE">RESGATE</option>
-                        <option value="COMPRA">COMPRA</option>
-                        <option value="CAPTURA">CAPTURA</option>
-                    </select>
-                </div>
+<div id="mainPanel" class="main-panel">
+    <div class="container">
+        <div class="no-print">
+            <div class="header-actions">
+                <button onclick="fazerLogout()" class="btn-secondary btn-logout">Sair do Sistema</button>
             </div>
-
-            <h2>🌿 3. Pastagem e Ambiente</h2>
-            <div class="grid">
-                <div class="full-width">
-                    <label>Principais Plantas (Flora):</label>
-                    <input type="text" id="especiesVeg">
-                </div>
-                <div>
-                    <label>Tipo de Flora:</label>
-                    <select id="origemFlora">
-                        <option value="Nativa">Nativa</option>
-                        <option value="Espontânea">Espontânea</option>
-                        <option value="Exótica">Exótica</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Recursos:</label>
-                    <div class="checkbox-group">
-                        <label class="checkbox-item"><input type="checkbox" name="recurso" value="Néctar"> Néctar</label>
-                        <label class="checkbox-item"><input type="checkbox" name="recurso" value="Pólen"> Pólen</label>
-                        <label class="checkbox-item"><input type="checkbox" name="recurso" value="Resina"> Resina</label>
+            <h1>Sistema de Gestão Meliponícola</h1>
+            <form id="cadastroForm">
+                
+                <h2>1. Identificação, Contato e Regularização</h2>
+                <div class="grid">
+                    <div class="full-width">
+                        <label>Nome do Meliponicultor:</label>
+                        <input type="text" id="nome" required>
+                    </div>
+                    <div>
+                        <label>Telefone / WhatsApp:</label>
+                        <input type="tel" id="telefone" placeholder="(00) 00000-0000">
+                    </div>
+                    <div>
+                        <label>E-mail:</label>
+                        <input type="email" id="email" placeholder="exemplo@email.com">
+                    </div>
+                    <div>
+                        <label>CPF / CNPJ:</label>
+                        <input type="text" id="cpf">
+                    </div>
+                    <div>
+                        <label>Número do Cadastro Técnico (CTF / IBAMA ou Estadual):</label>
+                        <input type="text" id="cadastroOficial" placeholder="Ex: SISFAUNA, GEDAVE, etc.">
+                    </div>
+                    <div class="full-width">
+                        <label>Coordenadas Geográficas (Latitude/Longitude) ou Endereço do Meliponário:</label>
+                        <input type="text" id="endereco" placeholder="Ex: -23.5505, -46.6333 ou Rua Exemplo, 123">
                     </div>
                 </div>
-            </div>
 
-            <h2>🍯 4. Relato de Safra (Produção)</h2>
-            <div class="grid">
-                <div>
-                    <label>Produto Colhido:</label>
-                    <select id="produtoSafra">
-                        <option value="Mel">Mel</option>
-                        <option value="Pólen (Samburá)">Pólen (Samburá)</option>
-                        <option value="Própolis/Geopropólis">Própolis/Geopropólis</option>
-                        <option value="Cera/Cerume">Cera/Cerume</option>
-                    </select>
+                <h2>2. Climatologia e Contexto Ambiental</h2>
+                <div class="grid">
+                    <div>
+                        <label>Período Sazonal / Estação:</label>
+                        <select id="periodoSazonal">
+                            <option value="Primavera / Verão">Primavera / Verão</option>
+                            <option value="Outono / Inverno">Outono / Inverno</option>
+                            <option value="Período de Estiagem / Seca">Período de Estiagem / Seca</option>
+                            <option value="Período de Altas Chuvas">Período de Altas Chuvas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Temperatura Média Local (ºC):</label>
+                        <input type="number" id="temperatura" placeholder="Ex: 28" min="-10" max="50">
+                    </div>
+                    <div>
+                        <label>Umidade Relativa do Ar (%):</label>
+                        <input type="number" id="umidade" placeholder="Ex: 65" min="0" max="100">
+                    </div>
+                    <div>
+                        <label>Data da Inspeção / Revisão:</label>
+                        <input type="date" id="dataRevisao">
+                    </div>
                 </div>
-                <div>
-                    <label>Quantidade Estimada:</label>
-                    <input type="text" id="qtdSafra" placeholder="Ex: 5 Litros, 2 Kg...">
-                </div>
-                <div>
-                    <label>Data da Colheita:</label>
-                    <input type="date" id="dataSafra">
-                </div>
-                <div>
-                    <label>Qualidade/Observação:</label>
-                    <input type="text" id="obsSafra" placeholder="Ex: Mel claro, aroma floral...">
-                </div>
-            </div>
 
-            <h2>⚠️ 5. Sanidade (Pragas)</h2>
-            <div class="checkbox-group">
-                <label class="checkbox-item"><input type="checkbox" name="praga" value="Forídeos"> Forídeos</label>
-                <label class="checkbox-item"><input type="checkbox" name="praga" value="Formigas"> Formigas</label>
-                <label class="checkbox-item"><input type="checkbox" name="praga" value="Abelha-Limão"> Abelha-Limão</label>
-                <label class="checkbox-item"><input type="checkbox" name="praga" value="Traça de Cera"> Traça de Cera</label>
-            </div>
+                <h2>3. Rastreabilidade, Genética e Plantel</h2>
+                <div class="grid">
+                    <div>
+                        <label>Identificação Única da Caixa (Código/Tag ID):</label>
+                        <input type="text" id="idCaixa" placeholder="Ex: CX-042A" required>
+                    </div>
+                    <div>
+                        <label>Espécie Cadastrada:</label>
+                        <input type="text" id="especie" placeholder="Ex: Jataí, Mandaçaia..." required>
+                    </div>
+                    <div>
+                        <label>Tipo de Meliponário:</label>
+                        <select id="tipoMeliponario">
+                            <option value="Cavaletes Individuais">Cavaletes Individuais</option>
+                            <option value="Estante Coletiva">Estante Coletiva</option>
+                            <option value="Meliponário Telado / Protegido">Meliponário Telado / Protegido</option>
+                            <option value="Fixação em Árvores">Fixação em Árvores</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Origem da Colônia / Matriz:</label>
+                        <select id="origem">
+                            <option value="Divisão Própria">Divisão Própria</option>
+                            <option value="Resgate Autorizado">Resgate Autorizado</option>
+                            <option value="Compra de Criatório Certificado">Compra de Criatório Certificado</option>
+                            <option value="Captura em Caixa-Isca">Captura em Caixa-Isca</option>
+                        </select>
+                    </div>
+                    <div class="full-width">
+                        <label>Linhagem Genética / Histórico Comportamental:</label>
+                        <input type="text" id="linhagemGenetica" placeholder="Ex: Matriz F1 de alta produção de mel, colônia mansa, etc.">
+                    </div>
+                </div>
 
-            <button type="submit" class="btn-main">💾 Salvar Tudo no Sistema</button>
-        </form>
-    </div>
+                <h2>4. Métricas de Desenvolvimento da Colônia</h2>
+                <div class="grid">
+                    <div>
+                        <label>Estado Geral da Rainha e Postura:</label>
+                        <select id="estadoRainha">
+                            <option value="Excelente (Postura regular, jovem e densa)">Excelente (Postura regular, jovem e densa)</option>
+                            <option value="Forte (Presença de postura recente)">Forte (Presença de postura recente)</option>
+                            <option value="Fraca ou Ausente (Troca natural / Zanganeira)">Fraca ou Ausente (Troca natural / Zanganeira)</option>
+                            <option value="Não verificado nesta revisão">Não verificado nesta revisão</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Volume do Ninho (Discos de Cria):</label>
+                        <select id="volumeNinho">
+                            <option value="Abundante (Ninho ocupando espaço máximo)">Abundante (Ninho ocupando espaço máximo)</option>
+                            <option value="Médio (Desenvolvimento estável)">Médio (Desenvolvimento estável)</option>
+                            <option value="Baixo / Crítico (Poucos discos de cria)">Baixo / Crítico (Poucos discos de cria)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Estoque Interno de Alimento da Própria Colônia:</label>
+                        <select id="estoqueAlimento">
+                            <option value="Abundante (Potes cheios e lacrados)">Abundante (Potes cheios e lacrados)</option>
+                            <option value="Suficiente (Atende às necessidades da colônia)">Suficiente (Atende às necessidades da colônia)</option>
+                            <option value="Crítico (Necessita de intervenção urgente)">Crítico (Necessita de intervenção urgente)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Quantidade Total de Colônias Ativas no Meliponário:</label>
+                        <input type="number" id="qtd" min="0" placeholder="Ex: 15">
+                    </div>
+                </div>
 
-    <div id="relatorio">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2>📊 Registros e Histórico</h2>
-            <button onclick="window.print()" class="no-print" style="padding:10px; cursor:pointer;">🖨️ Gerar PDF/Imprimir</button>
+                <h2>5. Pastagem, Nutrição e Custos Operacionais</h2>
+                <div class="grid">
+                    <div class="full-width">
+                        <label>Flora Predominante no Raio de Voo:</label>
+                        <input type="text" id="especiesVeg" placeholder="Ex: Eucalipto, Silvestre, Pomar Cítrico...">
+                    </div>
+                    <div>
+                        <label>Origem da Flora Local:</label>
+                        <select id="origemFlora">
+                            <option value="Nativa Regional">Nativa Regional</option>
+                            <option value="Espontânea / Antrópica">Espontânea / Antrópica</option>
+                            <option value="Exótica / Cultivada">Exótica / Cultivada</option>
+                            <option value="Mista">Mista</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Método de Alimentação Artificial / Suplementar:</label>
+                        <select id="alimentacao">
+                            <option value="Nenhuma (Apenas Alimentação Natural)">Nenhuma (Apenas Alimentação Natural)</option>
+                            <option value="Xarope de Açúcar / Mel de Apis (Energética)">Xarope de Açúcar / Mel de Apis (Energética)</option>
+                            <option value="Bombom de Pólen Artificial (Proteica)">Bombom de Pólen Artificial (Proteica)</option>
+                            <option value="Mista (Energética e Proteica)">Mista (Energética e Proteica)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Custos de Manejo do Período (R$):</label>
+                        <input type="number" id="custosManejo" placeholder="Ex: 150.00" step="0.01">
+                    </div>
+                    <div>
+                        <label>Valor de Venda Estimado da Safra (R$):</label>
+                        <input type="number" id="valorVenda" placeholder="Ex: 450.00" step="0.01">
+                    </div>
+                    <div class="full-width">
+                        <label>Recursos Coletados em Maior Volume:</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item"><input type="checkbox" name="recurso" value="Néctar"> Néctar</label>
+                            <label class="checkbox-item"><input type="checkbox" name="recurso" value="Pólen"> Pólen</label>
+                            <label class="checkbox-item"><input type="checkbox" name="recurso" value="Resina"> Resina</label>
+                            <label class="checkbox-item"><input type="checkbox" name="recurso" value="Geoprópolis"> Geoprópolis</label>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>6. Relato de Safra, Destinação e Legislação Sanitária</h2>
+                <div class="grid">
+                    <div>
+                        <label>Produto Colhido:</label>
+                        <select id="produtoSafra">
+                            <option value="Mel In Natura">Mel In Natura</option>
+                            <option value="Mel Maturado / Fermentado">Mel Maturado / Fermentado</option>
+                            <option value="Pólen (Samburá)">Pólen (Samburá)</option>
+                            <option value="Extrato de Própolis / Geoprópolis">Extrato de Própolis / Geoprópolis</option>
+                            <option value="Cera / Cerume Puro">Cera / Cerume Puro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Volume / Massa da Colheita:</label>
+                        <input type="text" id="qtdSafra" placeholder="Ex: 15 Litros, 5 Quilogramas...">
+                    </div>
+                    <div>
+                        <label>Método Utilizado para Extração:</label>
+                        <select id="metodoExtracao">
+                            <option value="Sugador Elétrico / Vácuo (Recomendado)">Sugador Elétrico / Vácuo (Recomendado)</option>
+                            <option value="Sugador Manual / Seringa">Sugador Manual / Seringa</option>
+                            <option value="Prensagem de Potes (Destrutivo)">Prensagem de Potes (Destrutivo)</option>
+                            <option value="Perfuração e Escoamento">Perfuração e Escoamento</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Processamento Pós-Colheita:</label>
+                        <select id="processamento">
+                            <option value="Nenhum (Mantido In Natura)">Nenhum (Mantido In Natura)</option>
+                            <option value="Refrigeração Constante">Refrigeração Constante</option>
+                            <option value="Pasteurização Térmica">Pasteurização Térmica</option>
+                            <option value="Desidratação Controlada">Desidratação Controlada</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Selo de Inspeção / Regulamentação:</label>
+                        <select id="seloInspecao">
+                            <option value="Nenhum / Consumo Próprio">Nenhum / Consumo Próprio</option>
+                            <option value="SIM (Serviço de Inspeção Municipal)">SIM (Serviço de Inspeção Municipal)</option>
+                            <option value="SIE (Serviço de Inspeção Estadual)">SIE (Serviço de Inspeção Estadual)</option>
+                            <option value="SIF (Serviço de Inspeção Federal)">SIF (Serviço de Inspeção Federal)</option>
+                            <option value="ART / Cadastro Técnico Ativo">ART / Cadastro Técnico Ativo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Data da Colheita:</label>
+                        <input type="date" id="dataSafra">
+                    </div>
+                    <div class="full-width">
+                        <label>Análise Sensorial / Controle de Qualidade:</label>
+                        <input type="text" id="obsSafra" placeholder="Ex: Alta umidade, notas cítricas, coloração âmbar claro, sem impurezas...">
+                    </div>
+                </div>
+
+                <h2>7. Monitoramento Sanitário (Controle de Pragas e Predadores)</h2>
+                <div class="full-width">
+                    <label>Selecione as ocorrências identificadas no período:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="praga" value="Forídeos (Pseudohypocera kerteszi)"> Forídeos</label>
+                        <label class="checkbox-item"><input type="checkbox" name="praga" value="Formigas Doces / Lava-pés"> Formigas</label>
+                        <label class="checkbox-item"><input type="checkbox" name="praga" value="Abelha-Limão (Lestrimelitta limao)"> Abelha-Limão (Ataque)</label>
+                        <label class="checkbox-item"><input type="checkbox" name="praga" value="Traça da Cera"> Traça da Cera</label>
+                        <label class="checkbox-item"><input type="checkbox" name="praga" value="Ácaros / Fungos nos Potes"> Ácaros / Fungos</label>
+                        <label class="checkbox-item"><input type="checkbox" name="praga" value="Lagartixas / Predadores Externos"> Predadores Externos</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-main">Salvar Dados no Banco de Gestão</button>
+            </form>
         </div>
-        <div id="listaDados"></div>
+
+        <div id="relatorio">
+            <div class="relatorio-header">
+                <h2>Registros e Histórico Técnico</h2>
+                <button onclick="window.print()" class="no-print btn-secondary">Gerar Relatório PDF / Imprimir</button>
+            </div>
+            <div id="listaDados"></div>
+        </div>
     </div>
 </div>
 
 <script>
+    const loginForm = document.getElementById('loginForm');
+    const loginSection = document.getElementById('loginSection');
+    const mainPanel = document.getElementById('mainPanel');
+    const loginError = document.getElementById('loginError');
+
     const form = document.getElementById('cadastroForm');
     const lista = document.getElementById('listaDados');
 
+    // Controle de Fluxo de Login
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const userIn = document.getElementById('username').value;
+        const passIn = document.getElementById('password').value;
+
+        if (userIn === "Zacarias" && passIn === "Zacarias123") {
+            loginError.style.display = "none";
+            loginSection.style.display = "none";
+            mainPanel.style.display = "block";
+            loginForm.reset();
+            renderizar();
+        } else {
+            loginError.style.display = "block";
+        }
+    });
+
+    function fazerLogout() {
+        mainPanel.style.display = "none";
+        loginSection.style.display = "block";
+    }
+
+    // Gerenciamento dos Registros Técnicos
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -192,28 +651,43 @@
             telefone: document.getElementById('telefone').value,
             email: document.getElementById('email').value,
             cpf: document.getElementById('cpf').value,
+            cadastroOficial: document.getElementById('cadastroOficial').value,
             endereco: document.getElementById('endereco').value,
-            tipoMeli: document.getElementById('tipoMeliponario').value,
+            periodoSazonal: document.getElementById('periodoSazonal').value,
+            temperatura: document.getElementById('temperatura').value,
+            umidade: document.getElementById('umidade').value,
+            dataRevisao: document.getElementById('dataRevisao').value,
+            idCaixa: document.getElementById('idCaixa').value,
             especie: document.getElementById('especie').value,
-            qtd: document.getElementById('qtd').value,
+            tipoMeli: document.getElementById('tipoMeliponario').value,
             origem: document.getElementById('origem').value,
+            linhagemGenetica: document.getElementById('linhagemGenetica').value,
+            estadoRainha: document.getElementById('estadoRainha').value,
+            volumeNinho: document.getElementById('volumeNinho').value,
+            estoqueAlimento: document.getElementById('estoqueAlimento').value,
+            qtd: document.getElementById('qtd').value,
             especiesVeg: document.getElementById('especiesVeg').value,
             origemFlora: document.getElementById('origemFlora').value,
+            alimentacao: document.getElementById('alimentacao').value,
+            custosManejo: document.getElementById('custosManejo').value,
+            valorVenda: document.getElementById('valorVenda').value,
             recursos: recursos.join(", "),
-            // Dados da Safra
             produtoSafra: document.getElementById('produtoSafra').value,
             qtdSafra: document.getElementById('qtdSafra').value,
+            metodoExtracao: document.getElementById('metodoExtracao').value,
+            processamento: document.getElementById('processamento').value,
+            seloInspecao: document.getElementById('seloInspecao').value,
             dataSafra: document.getElementById('dataSafra').value,
             obsSafra: document.getElementById('obsSafra').value,
             pragas: pragas.join(", "),
             dataRegistro: new Date().toLocaleDateString('pt-BR')
         };
 
-        const banco = JSON.parse(localStorage.getItem('meliponaria_v4')) || [];
+        const banco = JSON.parse(localStorage.getItem('meliponaria_v2')) || [];
         banco.unshift(registro);
-        localStorage.setItem('meliponaria_v2', JSON.stringify(banco)); // Mantive compatível ou mude v4
+        localStorage.setItem('meliponaria_v2', JSON.stringify(banco));
 
-        alert("✅ Dados salvos com sucesso!");
+        alert("Dados técnicos salvos com sucesso!");
         form.reset();
         renderizar();
     });
@@ -225,45 +699,63 @@
         banco.forEach(item => {
             const div = document.createElement('div');
             div.className = 'card';
+            
+            const custo = item.custosManejo ? parseFloat(item.custosManejo).toFixed(2) : '0.00';
+            const venda = item.valorVenda ? parseFloat(item.valorVenda).toFixed(2) : '0.00';
+            const saldo = (parseFloat(venda) - parseFloat(custo)).toFixed(2);
+
             div.innerHTML = `
                 <button class="btn-delete no-print" onclick="excluir(${item.id})">Excluir</button>
-                <span class="card-title">${item.nome}</span>
-                <div style="font-size: 0.85em; margin-bottom: 10px;">
-                    📞 ${item.telefone} | ✉️ ${item.email} | 🏠 ${item.endereco}
+                <span class="card-title">Responsável: ${item.nome} | ID da Caixa: ${item.idCaixa}</span>
+                <div class="card-meta">
+                    Contato: ${item.telefone || 'Nenhum'} | Localização/Coordenadas: ${item.endereco || 'Não informada'}<br>
+                    Cadastro Oficial: ${item.cadastroOficial || 'Não informado'}
                 </div>
                 
-                <div class="grid">
-                    <div style="border-right: 1px solid #eee; padding-right: 10px;">
-                        <strong>🐝 Plantel:</strong> ${item.qtd}x ${item.especie}<br>
-                        <small>Tipo: ${item.tipoMeli} | Origem: ${item.origem}</small>
+                <div class="card-grid">
+                    <div>
+                        <span class="card-section-title">Manejo e Biometria da Colônia</span>
+                        <small>Espécie: ${item.especie} (Total no local: ${item.qtd || '1'})</small><br>
+                        <small>Tipo Instalado: ${item.tipoMeli} | Origem: ${item.origem}</small><br>
+                        <small>Linhagem: ${item.linhagemGenetica || 'Não detalhada'}</small><br>
+                        <small>Status da Rainha: ${item.estadoRainha}</small><br>
+                        <small>Volume do Ninho: ${item.volumeNinho}</small><br>
+                        <small>Estoque Interno: ${item.estoqueAlimento}</small>
                     </div>
                     <div>
-                        <strong>🍯 Produção/Safra:</strong><br>
-                        <span class="badge badge-safra">${item.produtoSafra}: ${item.qtdSafra}</span>
-                        <br><small>Data Colheita: ${item.dataSafra || 'Não informada'}</small>
+                        <span class="card-section-title">Produção, Destinação e Finanças</span>
+                        <span class="badge badge-safra">${item.produtoSafra}: ${item.qtdSafra || '0'}</span>
+                        <span class="badge badge-info">${item.seloInspecao}</span><br>
+                        <small>Método de Extração: ${item.metodoExtracao}</small><br>
+                        <small>Pós-Colheita: ${item.processamento}</small><br>
+                        <small>Data da Colheita: ${item.dataSafra ? item.dataSafra.split('-').reverse().join('/') : 'Não informada'}</small><br>
+                        <small>Custo: R$ ${custo} | Venda: R$ ${venda} | Saldo: R$ ${saldo}</small>
                     </div>
                 </div>
 
-                <div style="margin-top:10px;">
-                    <strong>🌿 Ambiente:</strong> ${item.especiesVeg} (${item.origemFlora})<br>
-                    <strong>⚠️ Pragas:</strong> ${item.pragas ? `<span class="badge badge-danger">${item.pragas}</span>` : 'Nenhuma'}
+                <div style="font-size: 0.9em; line-height: 1.6;">
+                    <strong>Dados Climáticos na Revisão:</strong> Estação: ${item.periodoSazonal} | Temperatura: ${item.temperatura ? item.temperatura + 'ºC' : 'Não informada'} | Umidade: ${item.umidade ? item.umidade + '%' : 'Não informada'} | Revisado em: ${item.dataRevisao ? item.dataRevisao.split('-').reverse().join('/') : 'Não informada'}<br>
+                    <strong>Ambiente e Nutrição:</strong> Flora Alvo: ${item.especiesVeg || 'Não especificada'} (${item.origemFlora}) | Alimentação Suplementar: ${item.alimentacao}<br>
+                    <strong>Recursos Coletados:</strong> ${item.recursos || 'Nenhum selecionado'}<br>
+                    <strong>Controle Sanitário (Pragas):</strong> ${item.pragas ? `<span class="badge badge-danger">${item.pragas}</span>` : 'Nenhuma praga ou predador detectado'}
                 </div>
-                <small style="color:#888; display:block; margin-top:10px; border-top:1px solid #f9f9f9;">📅 Cadastrado em: ${item.dataRegistro}</small>
+                
+                ${item.obsSafra ? `<div style="margin-top:12px; background:#f8fafc; padding:12px; border: 1px solid var(--border-color); border-radius:6px; font-size:0.85em; color: #475569;"><strong>Análise Sensorial e Observações da Safra:</strong> ${item.obsSafra}</div>` : ''}
+                
+                <span class="card-footer">Data de Lançamento no Sistema: ${item.dataRegistro}</span>
             `;
             lista.appendChild(div);
         });
     }
 
     function excluir(id) {
-        if(confirm("Deseja apagar este registro?")) {
+        if(confirm("Confirma a exclusão definitiva deste registro técnico?")) {
             let banco = JSON.parse(localStorage.getItem('meliponaria_v2'));
             banco = banco.filter(i => i.id !== id);
             localStorage.setItem('meliponaria_v2', JSON.stringify(banco));
             renderizar();
         }
     }
-
-    window.onload = renderizar;
 </script>
 
 </body>
